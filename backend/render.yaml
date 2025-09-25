@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: portfolio-backend
+    env: java
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: portfolio-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: portfolio-db
+          property: username
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: portfolio-db
+          property: password
+
+databases:
+  - name: portfolio-db
+    databaseName: portfoliodb
+    user: portfolio_user
+    plan: free
+    # PostgreSQL 15 is the latest version as of now
+    version: "15"
