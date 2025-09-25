@@ -88,6 +88,11 @@ public class AdminAuthController {
     
     @PostMapping("/register")
     public ResponseEntity<?> registerAdmin(@RequestBody LoginRequest request) {
-        return ResponseEntity.status(403).body(new AuthResponse(null, null, null, "Admin registration is disabled."));
+        try {
+            AdminUser adminUser = adminUserService.createAdminUser(request.getUsername(), request.getPassword());
+            return ResponseEntity.ok(new AuthResponse(null, adminUser.getUsername(), adminUser.getRole(), "Admin user created successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(new AuthResponse(null, null, null, "Error creating admin user: " + e.getMessage()));
+        }
     }
 } 
